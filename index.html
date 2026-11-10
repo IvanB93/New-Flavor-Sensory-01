@@ -178,7 +178,7 @@ textarea{min-height:70px;resize:vertical;}
 ===================================================================== */
 /* VERSION CHECK — forces phones to load a fresh copy after you upload a
    new version. Bump APP_VERSION and version.txt together every time. */
-var APP_VERSION = "1.0.7";
+var APP_VERSION = "1.0.8";
 (function checkForStaleVersion(){
   var alreadyReloadedFor = null;
   try{ alreadyReloadedFor = sessionStorage.getItem('flavorTestReloadedFor'); }catch(e){}
@@ -198,7 +198,7 @@ var APP_VERSION = "1.0.7";
     .catch(function(){ /* version.txt missing — just continue */ });
 })();
 
-var SHEETS_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbxvm4o8R4tiJsTTzbf3k4wP0bqpZr6hufEV0fnWeeBYdtKHmLIjAKv6Xw_cyVATzB-d/exec";
 var STORAGE_KEY = "flavorTestSave_v1";
 var SUBMISSIONS_KEY = "flavorTestSubmissions_v1";
 
