@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flavor Sensory Test Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F1317;
+  --panel:#171C22;
+  --panel2:#1E252C;
+  --line:#2B333B;
+  --text:#E8ECEF;
+  --textDim:#8B98A3;
+  --textFaint:#5C6873;
+  --weak:#4F8FE0;
+  --weakDim:#2C4A6B;
+  --jar:#39C7A6;
+  --jarDim:#1E4A40;
+  --strong:#E0A23D;
+  --strongDim:#5C4A24;
+  --penalty:#D8503F;
+  --accent:#E0A23D;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--ink);
+  color:var(--text);
+  font-family:'IBM Plex Sans', system-ui, sans-serif;
+}
+.mono{font-family:'IBM Plex Mono','Courier New',monospace;}
+.disp{font-family:'IBM Plex Sans Condensed','Arial Narrow',sans-serif;}
+::selection{background:#E0A23D55;}
+input, select{
+  font-family:'IBM Plex Sans', sans-serif;
+  background:var(--panel2);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:9px 10px;
+  font-size:13.5px;
+}
+input:focus, select:focus{outline:1.5px solid var(--accent);}
+::placeholder{color:var(--textFaint);}
+button{
+  font-family:'IBM Plex Sans Condensed', sans-serif;
+  font-weight:600;
+  font-size:13.5px;
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+  padding:10px 18px;
+  border-radius:3px;
+  cursor:pointer;
+  border:1px solid transparent;
+  transition:filter .15s ease;
+}
+button:hover{filter:brightness(1.15);}
+.btn-primary{background:var(--accent);color:#1B1300;border:1px solid var(--accent);}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line);}
+#header{
+  border-bottom:1px solid var(--line);
+  padding:16px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+#header h1{
+  font-family:'IBM Plex Sans Condensed', sans-serif;
+  font-size:19px;
+  font-weight:700;
+  letter-spacing:0.01em;
+  margin:0;
+}
+#header .sub{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10.5px;
+  color:var(--textFaint);
+  letter-spacing:0.06em;
+  margin-top:2px;
+}
+#main{max-width:1000px;margin:0 auto;padding:28px 20px 60px;}
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:20px 22px;
+  margin-bottom:20px;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--textFaint);
+  margin-bottom:10px;
+}
+.readoutRow{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+.readout{flex:1 1 160px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:20px 22px;text-align:center;}
+.readout .val{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:var(--text);}
+.readout .lbl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--textFaint);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
+.warnBox{background:#5C4A2455;border:1px solid var(--strong);border-radius:3px;padding:10px 14px;margin-bottom:14px;font-size:12.5px;color:var(--strong);}
+.jarBlock{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line);}
+.jarBlock:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0;}
+.jarTop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.jarTitle{font-family:'IBM Plex Sans Condensed',sans-serif;font-size:15px;font-weight:600;}
+.jarBar{display:flex;height:18px;border-radius:2px;overflow:hidden;border:1px solid var(--line);}
+.jarBarRow{display:flex;justify-content:space-between;margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
+.natag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--textFaint);border:1px solid var(--line);border-radius:2px;padding:2px 6px;}
+.diffRow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.diffLabel{width:110px;font-size:11.5px;color:var(--textDim);text-align:right;}
+.diffTrack{flex:1;background:var(--panel2);border-radius:2px;height:12px;}
+.diffFill{height:12px;border-radius:2px;}
+.diffVal{width:42px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--textFaint);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);}
+th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--textFaint);}
+.note{font-size:11.5px;color:var(--textFaint);font-family:'IBM Plex Mono',monospace;line-height:1.6;}
+.histBars{display:flex;align-items:flex-end;gap:4px;height:140px;}
+.histBar{flex:1;background:var(--jar);border-radius:2px 2px 0 0;position:relative;min-height:1px;}
+.histBar span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--textDim);}
+.histLabels{display:flex;gap:4px;margin-top:6px;}
+.histLabels span{flex:1;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--textFaint);}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.qTitle{font-family:'IBM Plex Sans Condensed',sans-serif;font-size:15px;font-weight:600;margin-bottom:10px;}
+.cRow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.cLabel{width:150px;font-size:12px;color:var(--textDim);text-align:right;flex-shrink:0;}
+.cTrack{flex:1;background:var(--panel2);border-radius:2px;height:14px;min-width:0;}
+.cFill{height:14px;border-radius:2px;background:var(--weak);}
+.cFill.bad{background:var(--penalty);}
+.cVal{width:64px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--textFaint);}
+.tableWrap{overflow-x:auto;}
+td.txt{white-space:pre-wrap;min-width:220px;}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.tabs button{padding:6px 10px;font-size:11.5px;}
+.tabs button.on{background:var(--accent);color:#1B1300;border-color:var(--accent);}
+@media (max-width:520px){ .cLabel{width:100px;} #main{padding:20px 14px 60px;} }
+</style>
+</head>
+<body>
+<div id="header">
+  <div>
+    <h1>FLAVOR SENSORY TEST <span style="color:var(--accent);">DASHBOARD</span></h1>
+    <div class="sub">FLAVOR FEEDBACK FROM ALL SUBMITTED SURVEYS</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <input type="password" id="keyInput" placeholder="dashboard key">
+    <button class="btn-primary" onclick="loadData()">Load Data</button>
+  </div>
+</div>
+<div id="main">
+  <div class="panel">
+    <div id="statusText" class="note">Enter your dashboard key above and click Load Data. The key is set in apps-script.gs as DASHBOARD_KEY — you can also open this page as dashboard.html?key=YOUR_KEY to skip typing it.</div>
+  </div>
+  <div id="out"></div>
+</div>
+<script>
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbwhiumLEfZNL6Ah1p9Swzhh62AoENlOUeKXfhJtPCSDtKhdh7g8tZrtOFHIG3zaix4o/exec";
+
+/* Keep this list in step with the questions in index.html.
+   k = column name; type = 'scale' | 'choice' | 'yesno' | 'text'.
+   For yesno questions, "bad" = the answer that signals a problem (shown in red). */
+var QUESTIONS = [
+  {k:'Satisfaction',  type:'scale', label:'Enjoyment', min:1, max:10},
+  {k:'Satisfaction_Choice', type:'multi', label:'Main issue (when enjoyment was 4 or lower)', options:['Bad flavor','Too harsh','Burnt taste','Too weak','Too strong','Off-putting aftertaste','Other']},
+  {k:'TasteNotes',    type:'text',  label:'What they taste'},
+  {k:'FlavorNotes',   type:'multi', label:'Flavor notes noticed', options:['Sweet','Sour / Tangy','Bitter','Earthy','Herbal','Fruity / Citrus','Spicy / Floral','Creamy / Smooth','Cooling / Menthol','Chemical / Off-note'], bad:'Chemical / Off-note'},
+  {k:'Describe',      type:'multi', label:'Words that describe it', options:['Fruity','Floral','Candy-like','Tropical','Citrus','Berry','Menthol/Cool','Icy','Minty','Sweet','Creamy','Vanilla','Chemical','Metallic','Bitter','Harsh','Smooth','Burnt/Ashy','Sour','Tart','Fresh','Cloying','Balanced','Medicinal','Perfumey','Watery/Thin'], sort:true},
+  {k:'Aftertaste',    type:'scale', label:'Aftertaste', min:1, max:10},
+  {k:'Defects',       type:'multi', label:'Defects noticed', options:['Burnt taste','Metallic taste','Chemical / solvent','Harsh / coughing','Weak flavor','Flavor faded fast'], allBad:true},
+  {k:'SuggestedName', type:'text',  label:'Suggested names'},
+  {k:'Recommend',     type:'choice',label:'Would recommend', options:['Yes','No'], bad:'No'},
+  {k:'WouldChange',   type:'text',  label:'What they would change'}
+];
+
+var ALL_ROWS = [];
+var FILTER = '';
+var TEXT_TAB = null;
+
+(function(){
+  var urlKey = null;
+  try{ urlKey = new URLSearchParams(location.search).get('key'); }catch(e){}
+  if(urlKey){ document.getElementById('keyInput').value = urlKey; loadData(); }
+})();
+
+function setStatus(msg, isError){
+  var el = document.getElementById('statusText');
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--penalty)' : '';
+}
+function loadData(){
+  var key = document.getElementById('keyInput').value.trim();
+  if(!key){ setStatus('Please enter the dashboard key.', true); return; }
+  setStatus('Loading…');
+  fetch(SHEETS_URL + '?dashboard=1&key=' + encodeURIComponent(key))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.ok){ setStatus('Error: ' + (d.error||'unknown'), true); return; }
+      ALL_ROWS = d.rows || [];
+      setStatus('Loaded ' + ALL_ROWS.length + ' survey' + (ALL_ROWS.length===1?'':'s') + '.');
+      render();
+    })
+    .catch(function(err){ setStatus('Could not load data: ' + err, true); });
+}
+function esc(s){ return (s===undefined||s===null) ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function setFilter(v){ FILTER = v; render(); }
+function setTextTab(k){ TEXT_TAB = k; render(); }
+
+function render(){
+  var codes = {};
+  ALL_ROWS.forEach(function(r){ if(r.FlavorCode) codes[r.FlavorCode] = (codes[r.FlavorCode]||0)+1; });
+  var rows = FILTER ? ALL_ROWS.filter(function(r){ return String(r.FlavorCode)===FILTER; }) : ALL_ROWS;
+  var html = '';
+
+  html += '<div class="panel" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">' +
+    '<span class="eyebrow" style="margin:0;">Flavor</span>' +
+    '<select onchange="setFilter(this.value)"><option value="">All flavors ('+ALL_ROWS.length+')</option>' +
+    Object.keys(codes).sort().map(function(c){ return '<option value="'+esc(c)+'"'+(c===FILTER?' selected':'')+'>'+esc(c)+' ('+codes[c]+')</option>'; }).join('') +
+    '</select></div>';
+
+  if(!rows.length){ document.getElementById('out').innerHTML = html + '<div class="panel note">No surveys yet.</div>'; return; }
+
+  // Readouts
+  function avgOf(k){
+    var xs = rows.map(function(r){ return parseFloat(r[k]); }).filter(function(n){ return !isNaN(n); });
+    return xs.length ? (xs.reduce(function(a,b){return a+b;},0)/xs.length).toFixed(1) : '—';
+  }
+  function pct(k, val){
+    var n = rows.filter(function(r){ return r[k]!=='' && r[k]!==undefined; }).length;
+    if(!n) return '—';
+    return Math.round(rows.filter(function(r){ return r[k]===val; }).length / n * 100) + '%';
+  }
+  var people = {};
+  rows.forEach(function(r){ if(r.ParticipantName) people[String(r.ParticipantName).trim().toLowerCase()] = 1; });
+  html += '<div class="readoutRow">' +
+    readout(rows.length, 'surveys') + readout(Object.keys(people).length, 'participants') +
+    readout(avgOf('Satisfaction'), 'avg enjoyment / 10') +
+    readout(avgOf('Aftertaste'), 'avg aftertaste / 10') + readout(pct('Recommend','Yes'), 'would recommend') +
+    '</div>';
+
+  // Satisfaction histogram
+  QUESTIONS.filter(function(q){ return q.type==='scale'; }).forEach(function(q){
+    var bins = [], max = 0;
+    for(var s=q.min; s<=q.max; s++){
+      var c = rows.filter(function(r){ return parseFloat(r[q.k])===s; }).length;
+      bins.push(c); if(c>max) max = c;
+    }
+    html += '<div class="panel"><div class="eyebrow">'+esc(q.label)+'</div><div class="histBars" style="margin-top:18px;">' +
+      bins.map(function(c){ return '<div class="histBar" style="height:'+(max?Math.round(c/max*100):0)+'%"><span>'+(c||'')+'</span></div>'; }).join('') +
+      '</div><div class="histLabels">' + bins.map(function(_,i){ return '<span>'+(q.min+i)+'</span>'; }).join('') + '</div></div>';
+  });
+
+  // Choice + yes/no
+  html += '<div class="panel"><div class="eyebrow">Answers</div><div class="grid2">';
+  QUESTIONS.filter(function(q){ return q.type==='choice' || q.type==='yesno'; }).forEach(function(q){
+    var opts = q.type==='yesno' ? ['Yes','No'] : q.options.slice();
+    rows.forEach(function(r){ var v = r[q.k]; if(v!=='' && v!==undefined && opts.indexOf(v)===-1) opts.push(v); });
+    var answered = rows.filter(function(r){ return r[q.k]!=='' && r[q.k]!==undefined; }).length;
+    html += '<div><div class="qTitle">'+esc(q.label)+'</div>';
+    opts.forEach(function(o){
+      var c = rows.filter(function(r){ return r[q.k]===o; }).length;
+      var p = answered ? Math.round(c/answered*100) : 0;
+      var bad = (q.bad && o===q.bad);
+      html += '<div class="cRow"><div class="cLabel">'+esc(o)+'</div><div class="cTrack"><div class="cFill'+(bad?' bad':'')+'" style="width:'+p+'%"></div></div><div class="cVal">'+c+' · '+p+'%</div></div>';
+    });
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // Tap-all-that-apply questions: share of surveys that picked each answer
+  html += '<div class="panel"><div class="eyebrow">Tap-all-that-apply answers (% of surveys)</div><div class="grid2">';
+  QUESTIONS.filter(function(q){ return q.type==='multi'; }).forEach(function(q){
+    var counts = {};
+    q.options.forEach(function(o){ counts[o] = 0; });
+    var asked = 0;
+    rows.forEach(function(r){
+      var v = r[q.k]; if(v===undefined || v==='') return;
+      asked++;
+      String(v).split(' | ').forEach(function(o){ o = o.trim(); if(o) counts[o] = (counts[o]||0) + 1; });
+    });
+    var base = q.k.indexOf('_Choice')>0 ? asked : rows.length;
+    var opts = Object.keys(counts);
+    if(q.sort) opts.sort(function(a,b){ return counts[b]-counts[a]; });
+    html += '<div><div class="qTitle">'+esc(q.label)+'</div>';
+    if(q.k.indexOf('_Choice')>0 && !asked) html += '<div class="note">Nobody scored low enough to be asked.</div>';
+    else opts.forEach(function(o){
+      var c = counts[o], p = base ? Math.round(c/base*100) : 0;
+      var bad = q.allBad || (q.bad && o===q.bad);
+      html += '<div class="cRow"><div class="cLabel">'+esc(o)+'</div><div class="cTrack"><div class="cFill'+(bad?' bad':'')+'" style="width:'+p+'%"></div></div><div class="cVal">'+c+' · '+p+'%</div></div>';
+    });
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // Written answers (with follow-up details)
+  var textQs = QUESTIONS.filter(function(q){ return q.type==='text'; });
+  var detailQs = QUESTIONS.filter(function(q){ return q.type!=='text' && q.k.indexOf('_')<0; });
+  var tabs = textQs.map(function(q){ return {k:q.k, label:q.label, cols:[q.k]}; });
+  tabs.push({k:'__details', label:'Follow-ups & comments', cols:null});
+  if(!TEXT_TAB) TEXT_TAB = tabs[0].k;
+  var tab = tabs.filter(function(t){ return t.k===TEXT_TAB; })[0] || tabs[0];
+
+  html += '<div class="panel"><div class="eyebrow">Written answers</div><div class="tabs">' +
+    tabs.map(function(t){ return '<button class="btn-ghost'+(t.k===tab.k?' on':'')+'" onclick="setTextTab(\''+t.k+'\')">'+esc(t.label)+'</button>'; }).join('') +
+    '</div><div class="tableWrap"><table><thead><tr><th>Participant</th><th>Flavor</th>';
+  if(tab.cols){
+    html += '<th>Answer</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var v = r[tab.cols[0]]; if(v==='' || v===undefined) return;
+      html += '<tr><td>'+esc(r.ParticipantName)+'</td><td>'+esc(r.FlavorCode)+'</td><td class="txt">'+esc(v)+'</td></tr>';
+    });
+  } else {
+    html += '<th>Question</th><th>Answer</th><th>Detail</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      detailQs.forEach(function(q){
+        ['_Detail','_Other','_Comment'].forEach(function(suf){
+          var v = r[q.k+suf]; if(v==='' || v===undefined) return;
+          html += '<tr><td>'+esc(r.ParticipantName)+'</td><td>'+esc(r.FlavorCode)+'</td><td>'+esc(q.label)+'</td><td>'+esc(r[q.k])+'</td><td class="txt">'+esc(v)+'</td></tr>';
+        });
+      });
+    });
+  }
+  html += '</tbody></table></div></div>';
+
+  document.getElementById('out').innerHTML = html;
+}
+function readout(v, lbl){ return '<div class="readout"><div class="val mono">'+v+'</div><div class="lbl">'+lbl+'</div></div>'; }
+</script>
+</body>
+</html>

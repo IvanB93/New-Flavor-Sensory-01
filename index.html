@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Flavor Sensory Test</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B3A5C;
+  --blue:#2E75B6;
+  --light:#E8F0F8;
+  --green:#27AE60;
+  --red:#C0392B;
+  --gold:#D4A017;
+  --yellow:#F1C40F;
+  --white:#FFFFFF;
+  --gray:#8A9AAE;
+  --shadow: 0 2px 10px rgba(27,58,92,0.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--light);
+  color:var(--navy);
+  -webkit-tap-highlight-color:transparent;
+}
+#app{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--light);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+#appHeader{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:var(--navy);
+  color:#fff;
+  padding:14px 16px 10px;
+  box-shadow:var(--shadow);
+}
+#appHeader .titleRow{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#appHeader h1{margin:0;font-size:19px;font-weight:800;letter-spacing:0.5px;}
+#appHeader .sessionTag{
+  font-size:11px;font-weight:700;background:var(--gold);color:var(--navy);
+  padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;
+}
+#contextBar{margin-top:8px;font-size:12px;color:#cfe0f2;display:flex;gap:10px;flex-wrap:wrap;}
+#contextBar span{white-space:nowrap;}
+#progressWrap{margin-top:10px;height:5px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;}
+#progressBar{height:100%;background:var(--yellow);width:0%;transition:width .25s ease;}
+#screen{flex:1;padding:16px 16px 100px;}
+.card{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;}
+.screenTitle{font-size:18px;font-weight:800;color:var(--navy);margin:2px 0 4px;}
+.screenSub{font-size:13px;color:#5a7089;margin-bottom:14px;line-height:1.4;}
+.pillRow{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px;}
+.pill{
+  border:1.5px solid #c7d6e8;background:#fff;color:var(--navy);
+  padding:9px 14px;border-radius:999px;font-size:13.5px;font-weight:600;
+  cursor:pointer;user-select:none;transition:all .15s;
+}
+.pill.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+label.fieldLabel{display:block;font-size:14.5px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.35;}
+.subLabel{display:block;font-size:12.5px;font-weight:600;color:#5a7089;margin:-2px 0 6px;}
+.reqStar{color:var(--red);}
+.badge{display:inline-block;vertical-align:2px;margin-left:6px;padding:2px 8px;border-radius:999px;
+  font-size:10.5px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;}
+.badge-req{background:#fdecea;color:var(--red);border:1px solid #f3c2bc;}
+.badge-opt{background:#eef3f9;color:#5a7089;border:1px solid #d6e2ef;}
+.titleRow2{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.titleRow2 .badge{margin-left:0;}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:12.5px;color:#5a7089;
+  background:var(--light);border-radius:10px;padding:9px 12px;margin:-4px 0 14px;}
+.legend .badge{margin-left:0;margin-right:4px;}
+.card.card-req{border:2px solid var(--red);}
+.card.card-opt{border:none;}
+.pIcon{font-size:17px;line-height:1;margin-right:6px;vertical-align:-2px;
+  font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
+.swatch{display:inline-block;width:22px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px;background:#fff;}
+.swatch-req{border:2px solid var(--red);}
+.swatch-opt{border:1px dashed #c7d6e8;}
+input[type=text], textarea{
+  width:100%;font-family:inherit;font-size:15px;padding:11px 12px;
+  border:1.5px solid #c7d6e8;border-radius:10px;background:#fbfdff;color:var(--navy);margin-bottom:12px;
+}
+textarea{min-height:70px;resize:vertical;}
+.q{padding-bottom:6px;margin-bottom:12px;border-bottom:1px solid #eef3f9;}
+.q:last-child{border-bottom:none;margin-bottom:0;}
+.q.missing label.fieldLabel{color:var(--red);}
+.q.missing textarea, .q.missing input[type=text]{border-color:var(--red);}
+.q.missing .pill, .q.missing .scaleBtn{border-color:var(--red);}
+.followBox{background:var(--light);border-radius:12px;padding:12px 12px 2px;margin:0 0 12px;}
+.scaleRow{display:grid;gap:5px;margin:6px 0 4px;}
+.scaleBtn{
+  height:44px;border-radius:8px;border:1.5px solid #c7d6e8;background:#fbfdff;
+  font-family:inherit;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;padding:0;
+}
+.scaleBtn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+/* 1–10 colour scale: red (low) -> yellow -> green (high); --h is set per button */
+.scaleBtn.grad{background:hsl(var(--h) 85% 94%);border-color:hsl(var(--h) 55% 70%);color:hsl(var(--h) 60% 24%);}
+.scaleBtn.grad.active{background:hsl(var(--h) var(--s,78%) var(--l,48%));border-color:hsl(var(--h) 70% 38%);color:#fff;
+  box-shadow:0 2px 6px hsl(var(--h) 60% 35% / .35);transform:translateY(-1px);}
+.scaleBtn.grad.active.darkTxt{color:hsl(var(--h) 70% 18%);}
+.scaleBar{height:6px;border-radius:4px;margin:2px 0 4px;
+  background:linear-gradient(to right,hsl(0 72% 52%),hsl(45 90% 50%),hsl(120 50% 40%));}
+.scaleAnchors{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;color:#8296ac;margin-bottom:12px;}
+.scaleAnchors span:last-child{text-align:right;}
+.btn{
+  display:block;width:100%;text-align:center;padding:14px;border-radius:12px;
+  font-size:15.5px;font-weight:700;border:none;cursor:pointer;margin-bottom:10px;font-family:inherit;
+}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy);}
+.btn-small{padding:10px;font-size:13.5px;}
+#bottomNav{
+  position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;
+  background:#fff;border-top:1px solid #dce8f5;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  display:flex;gap:10px;z-index:40;
+}
+#bottomNav:empty{display:none;}
+#bottomNav button{flex:1;margin-bottom:0;}
+#bottomNav .navBackBtn{flex:0 0 84px;}
+.resumeBar{
+  background:var(--gold);color:var(--navy);padding:10px 16px;font-size:13.5px;font-weight:700;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.resumeBar button{
+  border:none;background:var(--navy);color:#fff;font-weight:700;
+  padding:8px 12px;border-radius:8px;font-size:12.5px;cursor:pointer;white-space:nowrap;
+}
+.toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;
+  font-size:13px;font-weight:600;z-index:300;box-shadow:var(--shadow);
+  opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;text-align:center;
+}
+.toast.show{opacity:1;}
+.statusMsg{font-size:13.5px;font-weight:700;padding:10px 12px;border-radius:10px;margin-bottom:12px;}
+.statusMsg.ok{background:#e6f6ec;color:var(--green);}
+.statusMsg.pending{background:#f2f7fc;color:var(--blue);}
+.checkIcon{
+  width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:34px;margin:6px auto 14px;
+}
+.smallNote{font-size:11.5px;color:#8296ac;margin-top:-6px;margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="resumeBar" class="resumeBar" style="display:none;"></div>
+  <header id="appHeader">
+    <div class="titleRow">
+      <h1 id="appTitle">Flavor Sensory Test</h1>
+      <span class="sessionTag" id="sessionTag">SETUP</span>
+    </div>
+    <div id="contextBar"></div>
+    <div id="progressWrap"><div id="progressBar"></div></div>
+  </header>
+  <main id="screen"></main>
+  <nav id="bottomNav"></nav>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   CONFIG
+===================================================================== */
+/* VERSION CHECK — forces phones to load a fresh copy after you upload a
+   new version. Bump APP_VERSION and version.txt together every time. */
+var APP_VERSION = "1.0.7";
+(function checkForStaleVersion(){
+  var alreadyReloadedFor = null;
+  try{ alreadyReloadedFor = sessionStorage.getItem('flavorTestReloadedFor'); }catch(e){}
+  fetch('version.txt', {cache: 'no-store'})
+    .then(function(r){ return r.ok ? r.text() : null; })
+    .then(function(remote){
+      if(!remote) return;
+      remote = remote.trim();
+      if(remote && remote !== APP_VERSION && alreadyReloadedFor !== remote){
+        try{ sessionStorage.setItem('flavorTestReloadedFor', remote); }catch(e){ return; }
+        var params = new URLSearchParams(location.search);
+        params.set('v', remote);
+        params.set('_', Date.now());
+        location.replace(location.pathname + '?' + params.toString());
+      }
+    })
+    .catch(function(){ /* version.txt missing — just continue */ });
+})();
+
+var SHEETS_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+var STORAGE_KEY = "flavorTestSave_v1";
+var SUBMISSIONS_KEY = "flavorTestSubmissions_v1";
+
+/* #####################################################################
+   ###                                                               ###
+   ###   SURVEY CONTENT — EDIT YOUR QUESTIONS AND ANSWERS HERE        ###
+   ###                                                               ###
+   #####################################################################
+   Everything a participant reads is in this section.
+
+   The survey is one scrolling page. Each entry in "pages" is a
+   section (a card with a heading) on that page. Each question has:
+   - k         internal ID = the column name in your Google Sheet.
+               Short, no spaces, unique. Renaming starts a new column.
+   - type      'text'   a written answer box
+               'yesno'  Yes / No buttons
+               'choice' pick one answer from "options"
+               'scale'  number buttons from "min" to "max"
+               'multi'  tap as many answers from "options" as apply
+                        (saved in one column, separated by  | )
+   - label     the question as participants see it
+   - required  true = must be answered before Submit works
+   Optional extras:
+   - followUp: {when:'Yes', label:'...'}  shows an extra written box when
+               that answer is picked (works for yesno and choice).
+               For a scale, use  atMost:4  (or atLeast:8) instead of when:
+               the follow-up shows when the score is that low (or high).
+               Saved in the column  <k>_Detail.
+               Add  choiceLabel:'...', choices:[...], choiceRequired:true
+               to also show answer buttons there. Saved in  <k>_Choice.
+               Add  multi:true  to let people tap more than one of them.
+   - otherOption: 'Other'  for a choice: picking it shows a box to type
+               in. Saved in the column  <k>_Other.
+   - comment: {label:'...'}  an always-visible optional comment box under
+               a choice/scale/yesno question. Saved in  <k>_Comment.
+   - placeholder: grey hint text inside a written box.
+   - icons: {'Sweet':'🍬', ...}  a small picture shown before an answer
+               (choice / multi). Only the words are saved to the Sheet.
+   Apostrophes inside text: write them as \' (e.g. 'Didn\'t like').
+   ##################################################################### */
+
+var SURVEY = {
+  appTitle: 'Flavor Sensory Test',   // big title in the header bar
+  browserTitle: 'Flavor Sensory Test', // text on the browser tab
+  tags: {form:'FLAVOR TEST', done:'DONE'},
+
+  setup: {
+    title: 'Flavor Sensory Test',
+    subtitle: 'Thanks for helping us test a new flavor. Try it 2–3 times, fill this in, then tap Submit at the bottom.',
+    nameLabel: 'Participant Name',
+    codeLabel: 'Flavor Name / Code (on the label)',
+    contextLabel: 'Flavor',          // shorter version shown in the header bar
+    codeAutoFilled: '✓ Auto-filled from your QR code link.',
+    resumePrompt: 'Resume your saved survey?'
+  },
+
+  pages: [
+    {
+      title: 'First Impression',
+      subtitle: 'Take your draw 2–3 times before answering.',
+      questions: [
+        {k:'Satisfaction', type:'scale', required:true, min:1, max:10,
+          label:'How much did you enjoy this flavor?',
+          lo:'1 = Did not enjoy at all', hi:'10 = Enjoyed a great deal',
+          followUp:{atMost:4,
+            choiceLabel:'What was the main issue? (tap all that apply)', multi:true,
+            choices:['Bad flavor','Too harsh','Burnt taste','Too weak','Too strong','Off-putting aftertaste','Other'],
+            label:'Anything else? (optional)'}},
+        {k:'TasteNotes', type:'text', required:true,
+          label:'Describe what you taste',
+          placeholder:'In your own words...'}
+      ]
+    },
+    {
+      title: 'Flavor & Aroma',
+      subtitle: 'Tap everything that applies.',
+      questions: [
+        {k:'FlavorNotes', type:'multi',
+          label:'Which flavor notes do you notice?',
+          options:['Sweet','Sour / Tangy','Bitter','Earthy','Herbal','Fruity / Citrus','Spicy / Floral','Creamy / Smooth','Cooling / Menthol','Chemical / Off-note'],
+          icons:{'Sweet':'🍬','Sour / Tangy':'🍋','Bitter':'☕','Earthy':'🍄','Herbal':'🌿','Fruity / Citrus':'🍊',
+                 'Spicy / Floral':'🌶️','Creamy / Smooth':'🥛','Cooling / Menthol':'❄️','Chemical / Off-note':'🧪'}},
+        {k:'Describe', type:'multi',
+          label:'Which words describe this flavor?',
+          options:['Fruity','Floral','Candy-like','Tropical','Citrus','Berry',
+                   'Menthol/Cool','Icy','Minty','Sweet','Creamy','Vanilla',
+                   'Chemical','Metallic','Bitter','Harsh','Smooth','Burnt/Ashy',
+                   'Sour','Tart','Fresh','Cloying','Balanced','Medicinal','Perfumey','Watery/Thin'],
+          icons:{'Fruity':'🍓','Floral':'🌸','Candy-like':'🍭','Tropical':'🍍','Citrus':'🍊','Berry':'🫐',
+                 'Menthol/Cool':'🌬️','Icy':'🧊','Minty':'🍃','Sweet':'🍬','Creamy':'🥛','Vanilla':'🍦',
+                 'Chemical':'🧪','Metallic':'🔩','Bitter':'☕','Harsh':'😖','Smooth':'😌','Burnt/Ashy':'🔥',
+                 'Sour':'🍋','Tart':'🍒','Fresh':'✨','Cloying':'🍯','Balanced':'⚖️','Medicinal':'💊',
+                 'Perfumey':'💐','Watery/Thin':'💧'}}
+      ]
+    },
+    {
+      title: 'Aftertaste',
+      questions: [
+        {k:'Aftertaste', type:'scale', required:true, min:1, max:10,
+          label:'How was the aftertaste?',
+          lo:'1 = Bad', hi:'10 = Amazing',
+          comment:{label:'Describe the aftertaste (optional)'}}
+      ]
+    },
+    {
+      title: 'Defect Checklist',
+      questions: [
+        {k:'Defects', type:'multi',
+          label:'Did you notice any of these? (tap all that apply)',
+          options:['Burnt taste','Metallic taste','Chemical / solvent','Harsh / coughing','Weak flavor','Flavor faded fast'],
+          comment:{label:'Other defects (optional)'}}
+      ]
+    },
+    {
+      title: 'Would You Recommend It?',
+      questions: [
+        {k:'Recommend', type:'choice', required:true,
+          label:'Would you recommend this flavor to friends or family?',
+          options:['Yes','No']}
+      ]
+    },
+    {
+      title: 'Final Thoughts',
+      subtitle: 'Optional — skip if you like.',
+      questions: [
+        {k:'SuggestedName', type:'text',
+          label:'Give this flavor a name',
+          placeholder:'e.g. Blue Dream'},
+        {k:'WouldChange', type:'text',
+          label:'One thing you would change about this flavor',
+          placeholder:'e.g. A little less sweet'}
+      ]
+    }
+  ],
+
+  yes: 'Yes', no: 'No',
+  requiredToast: 'Please answer the questions marked in red',
+  requiredBadge: 'Required', optionalBadge: 'Optional', someRequiredBadge: 'Some required',
+  requiredLegend: 'Red border = required section', optionalLegend: 'No border = optional',
+  mixedNote: 'Questions marked * are required; the rest are optional.',
+  setupToast: 'Please fill in: ',
+
+  submitBtn: 'Submit',
+
+  done: {
+    title: 'Survey Complete',
+    thanks: 'You are done — thank you for your feedback!',
+    sending: 'Sending data...',
+    sent: 'Data sent automatically',
+    exportBtn: 'Export Backup (CSV)',
+    anotherBtn: 'Test Another Flavor'   // starts a fresh survey, keeps the name
+  }
+};
+/* ######################  END OF SURVEY CONTENT  ###################### */
+
+/* =====================================================================
+   STATE  (one page: phase is 'form' or 'done')
+===================================================================== */
+var state = null;
+function freshState(){ return { phase:'form', info:{}, a:{}, submitted:false }; }
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+function loadState(){
+  try{ var raw = localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return null;
+}
+function clearSavedState(){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} }
+var __saveT = null;
+function saveSoon(){ clearTimeout(__saveT); __saveT = setTimeout(saveState, 400); }
+
+/* =====================================================================
+   BOOT / RESUME
+===================================================================== */
+function getQueryParam(name){
+  try{ return new URLSearchParams(location.search).get(name); }catch(e){ return null; }
+}
+function hasProgress(st){
+  return st && st.info && st.a && st.phase==='form' && (st.info.name || Object.keys(st.a).length);
+}
+function boot(){
+  document.title = SURVEY.browserTitle;
+  document.getElementById('appTitle').textContent = SURVEY.appTitle;
+  var saved = loadState();
+  if(hasProgress(saved)){
+    state = saved;
+    var bar = document.getElementById('resumeBar');
+    bar.style.display = 'flex';
+    bar.innerHTML = '<span>'+SURVEY.setup.resumePrompt+'</span>' +
+      '<span><button onclick="resumeYes()" style="margin-right:6px;">Resume</button>' +
+      '<button onclick="resumeNo()" style="background:#c0392b;">Start Over</button></span>';
+  } else {
+    state = freshState();
+    var codeFromUrl = getQueryParam('code');
+    if(codeFromUrl) state.info.code = codeFromUrl;
+  }
+  render();
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+
+function resumeYes(){ document.getElementById('resumeBar').style.display='none'; }
+function resumeNo(){
+  clearSavedState();
+  state = freshState();
+  var codeFromUrl = getQueryParam('code');
+  if(codeFromUrl) state.info.code = codeFromUrl;
+  document.getElementById('resumeBar').style.display='none';
+  render(); window.scrollTo(0,0);
+}
+
+/* =====================================================================
+   HELPERS
+===================================================================== */
+function esc(s){
+  return (s===undefined||s===null) ? '' :
+    String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+function allQuestions(){
+  var out = [];
+  SURVEY.pages.forEach(function(p){ out = out.concat(p.questions); });
+  return out;
+}
+function findQ(k){
+  var qs = allQuestions();
+  for(var i=0;i<qs.length;i++){ if(qs[i].k===k) return qs[i]; }
+  return null;
+}
+function getA(k){ return state.a[k]; }
+function setA(k, v){ state.a[k] = v; clearMissing(k.split('_')[0]); updateProgress(); saveSoon(); }
+function setInfo(field, v){ state.info[field] = v; clearMissing(field); updateHeader(); saveSoon(); }
+function clearMissing(k){ var el = document.getElementById('q-'+k); if(el) el.classList.remove('missing'); }
+function isEmpty(v){
+  if(Array.isArray(v)) return v.length===0;
+  return v===undefined || v===null || String(v).trim()==='';
+}
+// Is this question's follow-up showing for the current answer?
+function fuActive(q, v){
+  var fu = q.followUp;
+  if(!fu || isEmpty(v)) return false;
+  if(fu.atMost!==undefined) return typeof v==='number' && v<=fu.atMost;
+  if(fu.atLeast!==undefined) return typeof v==='number' && v>=fu.atLeast;
+  return v===fu.when;
+}
+function joinVal(v){ return Array.isArray(v) ? v.join(' | ') : ((v===undefined||v===null) ? '' : v); }
+
+/* =====================================================================
+   RENDER
+===================================================================== */
+function render(){
+  updateHeader();
+  document.getElementById('screen').innerHTML = (state.phase==='done') ? renderDone() : renderForm();
+  renderNav();
+}
+function updateHeader(){
+  document.getElementById('sessionTag').textContent = state.phase==='done' ? SURVEY.tags.done : SURVEY.tags.form;
+  var ctx = document.getElementById('contextBar');
+  ctx.innerHTML = state.info.code ? '<span>'+esc(SURVEY.setup.contextLabel||SURVEY.setup.codeLabel)+': '+esc(state.info.code)+'</span>' : '';
+  updateProgress();
+}
+// Progress bar = share of required questions answered
+function updateProgress(){
+  var total = 2, done = 0;
+  if(!isEmpty(state.info.name)) done++;
+  if(!isEmpty(state.info.code)) done++;
+  allQuestions().forEach(function(q){ if(q.required){ total++; if(!isEmpty(getA(q.k))) done++; } });
+  var pct = state.phase==='done' ? 100 : Math.round(done/total*100);
+  document.getElementById('progressBar').style.width = pct+'%';
+}
+function renderNav(){
+  var nav = document.getElementById('bottomNav');
+  nav.innerHTML = state.phase==='done' ? '' :
+    '<button class="btn btn-primary" onclick="submitForm()">'+SURVEY.submitBtn+'</button>';
+}
+
+/* =====================================================================
+   SUBMIT
+===================================================================== */
+function submitForm(){
+  var firstMissing = null;
+  function flag(id){
+    var el = document.getElementById('q-'+id);
+    if(el) el.classList.add('missing');
+    if(!firstMissing) firstMissing = el;
+  }
+  if(isEmpty(state.info.name)) flag('name');
+  if(isEmpty(state.info.code)) flag('code');
+  allQuestions().forEach(function(q){
+    var v = getA(q.k);
+    if(q.required && isEmpty(v)){ flag(q.k); return; }
+    var fu = q.followUp;
+    if(fu && fu.choices && fu.choiceRequired && fuActive(q, v) && isEmpty(getA(q.k+'_Choice'))) flag(q.k);
+  });
+  if(firstMissing){
+    toast(SURVEY.requiredToast);
+    firstMissing.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  state.phase = 'done';
+  saveState(); render(); window.scrollTo(0,0);
+}
+function reviewAnother(){
+  var carryName = state.info.name;
+  state = freshState();
+  state.info.name = carryName;
+  saveState(); render(); window.scrollTo(0,0);
+}
+
+/* =====================================================================
+   THE FORM
+===================================================================== */
+function renderForm(){
+  var S = SURVEY.setup, i = state.info;
+  var html = '<div class="card card-req">';
+  html += '<div class="screenTitle">'+S.title+'</div>';
+  html += '<div class="screenSub">'+S.subtitle+'</div>';
+  html += '<div class="legend"><span><span class="swatch swatch-req"></span>'+SURVEY.requiredLegend+'</span><span><span class="swatch swatch-opt"></span>'+SURVEY.optionalLegend+'</span></div>';
+  html += '<div class="q" id="q-name"><label class="fieldLabel" for="f-name">'+S.nameLabel+'</label>';
+  html += '<input type="text" id="f-name" value="'+esc(i.name)+'" oninput="setInfo(\'name\', this.value)"></div>';
+  html += '<div class="q" id="q-code"><label class="fieldLabel" for="f-code">'+S.codeLabel+'</label>';
+  html += '<input type="text" id="f-code" value="'+esc(i.code)+'" oninput="setInfo(\'code\', this.value)">';
+  if(i.code && getQueryParam('code')===i.code){
+    html += '<div class="smallNote" style="color:var(--green);">'+S.codeAutoFilled+'</div>';
+  }
+  html += '</div></div>';
+
+  SURVEY.pages.forEach(function(page){
+    var nReq = page.questions.filter(function(q){ return q.required; }).length;
+    var mixed = nReq>0 && nReq<page.questions.length;
+    html += '<div class="card '+(nReq ? 'card-req' : 'card-opt')+'">';
+    html += '<div class="titleRow2"><div class="screenTitle">'+page.title+'</div>'+sectionBadge(page)+'</div>';
+    if(mixed) html += '<div class="smallNote" style="margin-top:0;">'+SURVEY.mixedNote+'</div>';
+    if(page.subtitle) html += '<div class="screenSub">'+page.subtitle+'</div>';
+    page.questions.forEach(function(q){ html += renderQuestion(q, mixed); });
+    html += '</div>';
+  });
+  return html;
+}
+
+function badge(required){
+  return required ? '<span class="badge badge-req">'+SURVEY.requiredBadge+'</span>'
+                  : '<span class="badge badge-opt">'+SURVEY.optionalBadge+'</span>';
+}
+function sectionBadge(page){
+  var n = page.questions.length, r = page.questions.filter(function(q){ return q.required; }).length;
+  var txt = r===n ? SURVEY.requiredBadge : (r===0 ? SURVEY.optionalBadge : SURVEY.someRequiredBadge);
+  return '<span class="badge '+(r===0?'badge-opt':'badge-req')+'">'+txt+'</span>';
+}
+function textBox(k, placeholder, multiline){
+  var v = getA(k);
+  if(multiline){
+    return '<textarea id="t-'+k+'" placeholder="'+esc(placeholder||'')+'" oninput="setA(\''+k+'\', this.value)">'+esc(v)+'</textarea>';
+  }
+  return '<input type="text" id="t-'+k+'" placeholder="'+esc(placeholder||'')+'" value="'+esc(v)+'" oninput="setA(\''+k+'\', this.value)">';
+}
+
+function renderQuestion(q, mixed){
+  var v = getA(q.k);
+  var html = '<div class="q" id="q-'+q.k+'">';
+  html += '<label class="fieldLabel"'+(q.type==='text'?' for="t-'+q.k+'"':'')+'>'+q.label+((mixed && q.required) ? ' <span class="reqStar">*</span>' : '')+'</label>';
+
+  if(q.type==='text'){
+    html += textBox(q.k, q.placeholder, true);
+  }
+  else if(q.type==='yesno' || q.type==='choice'){
+    var opts = q.type==='yesno' ? ['Yes','No'] : q.options;
+    html += '<div class="pillRow">';
+    opts.forEach(function(o, idx){
+      var shown = q.type==='yesno' ? (o==='Yes'?SURVEY.yes:SURVEY.no) : o;
+      html += '<div class="pill '+(v===o?'active':'')+'" role="button" tabindex="0" onclick="pickOpt(\''+q.k+'\','+idx+')">'+esc(shown)+'</div>';
+    });
+    html += '</div>';
+    if(q.otherOption && v===q.otherOption){
+      html += textBox(q.k+'_Other', q.otherPlaceholder||'Please specify', false);
+    }
+  }
+  else if(q.type==='scale'){
+    var min = q.min||1, max = q.max||10, n = max-min+1;
+    html += '<div class="scaleRow" style="grid-template-columns:repeat('+n+',1fr);">';
+    for(var s=min; s<=max; s++){
+      var hue = Math.round(120*(s-min)/Math.max(1,max-min));   // 0 = red, 60 = yellow, 120 = green
+      html += '<button type="button" class="scaleBtn grad '+(v===s?'active':'')+((hue>=35&&hue<=85)?' darkTxt':'')+'" style="--h:'+hue+(hue>85?';--s:58%;--l:38%':'')+'" onclick="pickScale(\''+q.k+'\','+s+')">'+s+'</button>';
+    }
+    html += '</div>';
+    html += '<div class="scaleBar"></div>';
+    html += '<div class="scaleAnchors"><span>'+esc(q.lo||'')+'</span><span>'+esc(q.hi||'')+'</span></div>';
+  }
+  else if(q.type==='multi'){
+    var picked = Array.isArray(v) ? v : [];
+    html += '<div class="pillRow">';
+    q.options.forEach(function(o, idx){
+      html += '<div class="pill '+(picked.indexOf(o)>=0?'active':'')+'" role="button" tabindex="0" aria-pressed="'+(picked.indexOf(o)>=0)+'" onclick="toggleMulti(\''+q.k+'\','+idx+')">'+((q.icons && q.icons[o]) ? '<span class="pIcon" aria-hidden="true">'+q.icons[o]+'</span>' : '')+esc(o)+'</div>';
+    });
+    html += '</div>';
+  }
+
+  if(fuActive(q, v)){
+    var fu = q.followUp, fuHtml = '';
+    if(fu.choices){
+      var cv = getA(q.k+'_Choice');
+      var isOn = function(o){ return fu.multi ? (Array.isArray(cv) && cv.indexOf(o)>=0) : cv===o; };
+      fuHtml += '<div id="q-'+q.k+'_Choice"><span class="subLabel">'+fu.choiceLabel+(fu.choiceRequired?' <span class="reqStar">*</span>':'')+'</span><div class="pillRow">';
+      fu.choices.forEach(function(o, idx){
+        fuHtml += '<div class="pill '+(isOn(o)?'active':'')+'" role="button" tabindex="0" onclick="pickFuChoice(\''+q.k+'\','+idx+')">'+esc(o)+'</div>';
+      });
+      fuHtml += '</div></div>';
+    }
+    if(fu.label) fuHtml += '<span class="subLabel">'+fu.label+'</span>' + textBox(q.k+'_Detail', fu.placeholder, true);
+    html += '<div class="followBox">' + fuHtml + '</div>';
+  }
+  if(q.comment){
+    html += '<span class="subLabel">'+q.comment.label+'</span>' + textBox(q.k+'_Comment', q.comment.placeholder, true);
+  }
+  html += '</div>';
+  return html;
+}
+function pickOpt(k, idx){
+  var q = findQ(k);
+  var opts = q.type==='yesno' ? ['Yes','No'] : q.options;
+  setA(k, opts[idx]);
+  render();
+}
+function pickFuChoice(k, idx){
+  var fu = findQ(k).followUp, o = fu.choices[idx];
+  if(fu.multi){
+    var cur = Array.isArray(state.a[k+'_Choice']) ? state.a[k+'_Choice'].slice() : [];
+    var i = cur.indexOf(o);
+    if(i>=0) cur.splice(i,1); else cur.push(o);
+    state.a[k+'_Choice'] = cur;
+  } else {
+    state.a[k+'_Choice'] = o;
+  }
+  clearMissing(k); saveSoon(); render();
+}
+function toggleMulti(k, idx){
+  var o = findQ(k).options[idx];
+  var cur = Array.isArray(getA(k)) ? getA(k).slice() : [];
+  var i = cur.indexOf(o);
+  if(i>=0) cur.splice(i,1); else cur.push(o);
+  setA(k, cur);
+  render();
+}
+function pickScale(k, n){ setA(k, n); render(); }
+
+
+function renderDone(){
+  var D = SURVEY.done;
+  if(!state.submitted){
+    state.submitted = true;
+    saveState();
+    submitResults();
+  }
+  var html = '<div class="card" style="text-align:center;">';
+  html += '<div class="checkIcon">✓</div>';
+  html += '<div class="screenTitle">'+D.title+'</div>';
+  html += '<div id="submitStatus" class="statusMsg pending">'+D.sending+'</div>';
+  html += '<div class="screenSub" style="font-size:16px;font-weight:700;color:var(--navy);">'+D.thanks+'</div>';
+  html += '<button class="btn btn-primary" onclick="reviewAnother()">'+D.anotherBtn+'</button>';
+  html += '<button class="btn btn-outline" onclick="exportCSV()">'+D.exportBtn+'</button>';
+  html += '</div>';
+  return html;
+}
+
+/* =====================================================================
+   SUBMISSION
+   One row per flavor tested. Columns: Timestamp, ParticipantName, FlavorCode,
+   then each question's k (plus _Detail / _Other / _Comment where used).
+===================================================================== */
+function buildRow(){
+  var row = {};
+  row.Timestamp = new Date().toISOString();
+  row.ParticipantName = state.info.name||'';
+  row.FlavorCode = state.info.code||'';
+  SURVEY.pages.forEach(function(page){
+    page.questions.forEach(function(q){
+      var v = getA(q.k);
+      var on = fuActive(q, v);
+      row[q.k] = joinVal(v);
+      if(q.followUp && q.followUp.choices) row[q.k+'_Choice'] = on ? joinVal(getA(q.k+'_Choice')) : '';
+      if(q.followUp && q.followUp.label) row[q.k+'_Detail'] = on ? (getA(q.k+'_Detail')||'') : '';
+      if(q.otherOption) row[q.k+'_Other'] = (v===q.otherOption) ? (getA(q.k+'_Other')||'') : '';
+      if(q.comment) row[q.k+'_Comment'] = getA(q.k+'_Comment')||'';
+    });
+  });
+  return row;
+}
+
+function submitResults(){
+  var row = buildRow();
+  var subs = [];
+  try{ subs = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]'); }catch(e){}
+  subs.push(row);
+  try{ localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(subs)); }catch(e){}
+
+  fetch(SHEETS_URL, {
+    method: "POST",
+    headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify({row: row})
+  }).then(function(resp){
+    return resp.text().then(function(text){
+      var parsed = null;
+      try{ parsed = JSON.parse(text); }catch(e){}
+      var el = document.getElementById('submitStatus');
+      if(!el) return;
+      if(parsed && parsed.ok){
+        el.textContent = SURVEY.done.sent;
+        el.className = 'statusMsg ok';
+      } else {
+        el.textContent = 'Server rejected the data (' + (parsed && parsed.error ? parsed.error : ('HTTP '+resp.status)) + ') — saved on this phone, use Export Backup';
+        el.className = 'statusMsg pending';
+      }
+    });
+  }).catch(function(){
+    var el = document.getElementById('submitStatus');
+    if(el){ el.textContent = 'Could not reach server — saved on this phone, use Export Backup'; el.className='statusMsg pending'; }
+  });
+}
+
+function exportCSV(){
+  var subs = [];
+  try{ subs = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)||'[]'); }catch(e){}
+  if(!subs.length){ toast('No submissions saved yet'); return; }
+  var keys = [];
+  subs.forEach(function(r){ Object.keys(r).forEach(function(k){ if(keys.indexOf(k)===-1) keys.push(k); }); });
+  var lines = [keys.join(',')];
+  subs.forEach(function(r){
+    lines.push(keys.map(function(k){
+      var v = r[k]!==undefined ? r[k] : '';
+      v = String(v).replace(/"/g,'""');
+      if(/[",\n]/.test(v)) v = '"'+v+'"';
+      return v;
+    }).join(','));
+  });
+  var blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'flavor_test_backup_'+Date.now()+'.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
